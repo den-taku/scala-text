@@ -74,3 +74,9 @@ val x : Int = 3 * 3
 // 割引額は定価の何パーセントであったか
 val cost = 26400 / 0.016
 val rate = 100 - (-26400 + cost) * 100 / 1980000 
+
+val u = new User("dwango", 13)
+// val u: User = User@10bd54d1
+
+User.printUser(u)
+// dwango 13
