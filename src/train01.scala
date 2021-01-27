@@ -543,3 +543,85 @@ var shape: Shape = new Rectangle(10.0, 20.0)
 println(shape.area)
 shape = new Circle(2.0)
 println(shape.area)
+
+// object <オブジェクト名> extends <クラス名> (with <トレイト名>)* {
+//     (<フィールド定義> | <メソッド定義>)*
+// }
+
+class Point(val x: Int, val y: Int)
+// defined class Point
+
+object Point {
+    def apply(x: Int, y: Int): Point = new Point(x, y)
+}
+// defined object Point
+// warning: previously defined class Point is not a companion to object Point.
+// Companions must be defined together; you may wish to use :paste mode for this.
+
+Point(3, 5)
+// res1: Point = Point(3,5)
+
+case class Point(x: Int, y: Int)
+// defined class Point
+
+Point(3, 5)
+// res2: Point = Point(3,5)
+
+Point(1, 2).equals(Point(1, 2))
+// res3: Boolean = true
+
+class Person(name: String, age: Int, private val weight: Int)
+
+object Hoge {
+    def printWeight(): Unit = {
+        val taro = new Person("Taro", 20, 70)
+        println(taro.weight)
+    }
+}
+// error: value weight in class Person cannot be accessed in Person
+//        println(taro.weight)
+//                     ^
+
+class Person(name: String, age: Int, private val weight: Int)
+
+object Person {
+    def printWeight(): Unit = {
+        val taro = new Person("Taro", 20, 70)
+        println(taro.weight)
+    }
+}
+// defined class Person
+// defined object Person
+
+// クラスを定義して、そのクラスのコンパニオンオブジェクトを定義してみましょう。
+// コンパニオンオブジェクトが同名のクラスに対する特権的なアクセス権を持っていることを、
+// クラスのフィールドをprivateにして、そのフィールドへアクセスできることを通じて確認してみましょう。
+// また、クラスのフィールドをprivate[this]にして、そのフィールドへアクセスできないことを確認してみましょう。
+
+class Point(private val x: Int, private val y: Int)
+
+object Point {
+    def printPoint(): Unit = {
+        val point = new Point(1, 2)
+        println("(" + point.x + ", " + point.y + ")")
+    }
+}
+// defined class Point
+// defined object Point
+
+Point.printPoint()
+// (1, 2)
+
+class Point(private val x: Int, private val y: Int)
+
+object Hoge {
+    def printPoint(): Unit = {
+        val point = new Point(1, 2)
+        println("(" + point.x + ", " + point.y + ")")
+    }
+}
+// <pastie>:21: error: value x in class Point cannot be accessed in Point
+//         println("(" + point.x + ", " + point.y + ")")
+//                             ^
+// <pastie>:21: error: value y in class Point cannot be accessed in Point
+//         println("(" + point.x + ", " + point.y + ")")
