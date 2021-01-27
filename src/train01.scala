@@ -625,3 +625,197 @@ object Hoge {
 //                             ^
 // <pastie>:21: error: value y in class Point cannot be accessed in Point
 //         println("(" + point.x + ", " + point.y + ")")
+
+// trait <トレイト名> {
+//     (<フィールド定義> | <メソッド定義>)*
+// }
+
+// class ClassC extends ClassA with TraitA with TraitB
+
+trait TraitA
+// defined trait TraitA
+
+class ClassA extends TraitA
+// defined class ClassA
+
+object ObjectA {
+    val a = new ClassA
+}
+// defined object ObjectA
+
+trait TraitA {
+    val name: String
+    def printName(): Unit = println(name)
+}
+
+class ClassA(val name: String) extends TraitA
+
+object ObjectA {
+    val a = new ClassA("dwango")
+
+    val a2 = new TraitA { val name = "kadokawa" }
+}
+// defined object ObjectA
+
+trait TraitA {
+    def greet(): Unit
+}
+
+trait TraitB extends TraitA {
+    def greet(): Unit = println("Good morning!")
+}
+
+trait TraitC extends TraitA {
+    def greet(): Unit = println("Good evening!")
+}
+
+// class ClassA extends TraitB with TraitC
+// error: class ClassA inherits conflicting members
+
+class ClassA extends TraitB with TraitC {
+    override def greet(): Unit = println("How are you?")
+}
+
+class ClassB extends TraitB with TraitC {
+    override def greet(): Unit = super[TraitB].greet()
+}
+
+(new ClassA).greet()
+// How are you?
+
+(new ClassB).greet()
+// Good morning!
+
+class ClassC extends TraitB with TraitC {
+    override def greet(): Unit = {
+        super[TraitB].greet()
+        super[TraitC].greet()
+    }
+}
+
+(new ClassC).greet()
+// Good morning!
+// Good evening!
+
+trait TraitA {
+    def greet(): Unit
+}
+
+trait TraitB extends TraitA {
+    override def greet(): Unit = println("Good morning!")
+}
+
+trait TraitC extends TraitA {
+    override def greet(): Unit = println("Good evening!")
+}
+
+class ClassA extends TraitB with TraitC
+// defined class ClassA
+
+(new ClassA).greet()
+// Good evening!
+
+class ClassA extends TraitC with TraitB
+// defined class ClassA
+
+(new ClassA).greet()
+// Good morning!
+
+trait TraitA {
+    def greet(): Unit = println("Hello!")
+}
+
+trait TraitB extends TraitA {
+    override def greet(): Unit = {
+        super.greet()
+        println("My name is Terebi-chan.")
+    }
+}
+
+trait TraitC extends TraitA {
+    override def greet(): Unit = {
+        super.greet()
+        println("I like niconico.")
+    }
+}
+
+class ClassA extends TraitB with TraitC
+
+class ClassB extends TraitC with TraitB
+
+(new ClassA).greet()
+// Hello!
+// My name is Terebi-chan.
+// I like niconico.
+
+(new ClassB).greet()
+// Hello!
+// I like niconico.
+// My name is Terebi-chan.
+
+trait A {
+    val foo: String
+}
+
+trait B extends A {
+    val bar = foo + "World"
+}
+
+class C extends B {
+    val foo = "Hello"
+
+    def printBar(): Unit = println(bar)
+}
+
+(new C).printBar()
+// nulWorld
+
+trait A {
+    val foo = "Hello, "
+}
+
+trait B extends A {
+    val bar = foo + "World"
+}
+
+class C extends B {
+    override val foo = "Hello"
+
+    def printBar(): Unit = println(bar)
+}
+
+(new C).printBar()
+// nulWorld
+
+trait A {
+    val foo: String
+}
+
+trait B extends A {
+    lazy val bar = foo + ", World"
+}
+
+class C extends B {
+    val foo = "Hello"
+
+    def printBar(): Unit = println(bar)
+}
+
+(new C).printBar()
+// Hello, World
+
+trait A {
+    val foo: String
+}
+
+trait B extends A {
+    val bar = foo + ", World"
+}
+
+class C extends {
+    val foo = "Hello"
+} with B {
+    def printBar(): Unit = println(bar)
+}
+
+(new C).printBar()
