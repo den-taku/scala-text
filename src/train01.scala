@@ -382,3 +382,164 @@ for(i <- 0 until 1000){
         case _ => println("Err")
     }
 }
+
+// class <クラス名> '(' (<引数名1> : <引数型1>, <引数名2> : <引数型2>...)? ')' {
+//     (<フィールド定義> | <メソッド定義> )*
+// }
+class Point(_x: Int, _y: Int) {
+    val x = _x
+    val y = _y
+}
+// defined class Point
+
+class Point(val x: Int, val y: Int)
+// defined class Point
+
+class Point(val x: Int, val y: Int) {
+    def +(p: Point): Point = {
+        new Point(x + p.x, y + p.y)
+    }
+    override def toString(): String = "(" + x + ", " + y + ")"
+}
+// defined class Point
+
+// (private([this | <パッケージ名>])? | protected([<パッケージ名>])?)? def <メソッド名> '('
+//     (<引数名> : <引数型> (, <引数名> : <引数型>)*)?
+// ')': <返り値型> = <本体>
+
+// (private([this | <パッケージ名>])? | protected([<パッケージ名>])?)? def <メソッド名> '('
+//     (<引数名> : <引数型> (, <引数名> : <引数型>)*)?
+// ')': <返り値型> = {
+//     (<式> (; | <改行>)?)*
+// }
+
+val p1 = new Point(1, 1)
+// p1: Point = (1, 1)
+
+val p2 = new Point(2, 2)
+// p2: Point = (2, 2)
+
+p1 + p2
+// res0: Point = (3, 3)
+
+// (private([this | <パッケージ名>])? | protected([<パッケージ名>])?)? def <メソッド名> '('
+//     (<引数名> : <引数型> (, <引数名> : <引数型>)*)?
+// ')'( '('
+//     (<引数名> : <引数型> (, <引数名> : <引数型>)*)?
+// ')' )* : <返り値型> = <本体式>
+
+class Adder {
+    def add(x: Int)(y: Int): Int = x + y
+}
+// defined class Adder
+
+val adder = new Adder()
+// adder: Adder = Adder@54fc7e28
+
+adder.add(2)(3)
+// res1: Int = 5
+
+val fun = adder.add(2) _
+// fun: Int => Int = $Lambda$4526/0x0000000801a3c1f8@693ae2f8
+
+fun(3)
+// res2: Int = 5
+
+class Adder {
+    def add(x: Int, y: Int): Int = x + y
+}
+// defined class Adder
+
+val adder = new Adder()
+// adder: Adder = Adder@2ab976ad
+
+adder.add(2, 3)
+// res3: Int = 5
+
+val fun: Int => Int = adder.add(2, _)
+// fun: Int => Int = $Lambda$4529/0x0000000801a3f0f8@2a8cfc20
+
+fun(3)
+// res4: Int = 5
+
+// (private([this | <パッケージ名>])? | protected([<パッケージ名>])?)? (val | var) <フィールド名>: <フィールド型> = <初期化式>
+
+// (private([this | <パッケージ名>])? | protected([<パッケージ名>])?)? def <メソッド名> '('
+//     (<引数名> : <引数型> (, <引数名> : <引数型>)*)?
+// ')' : <返り値型>
+
+// (private([this | <パッケージ名>])? | protected([<パッケージ名>])?)? (val | var) <フィールド名> : <フィールド型>
+
+abstract class XY {
+    def x: Int
+    def y: Int
+}
+// defined class XY
+
+// class <クラス名> <クラス引数> (extends <スーパークラス>)? (with <トレイト名>)* {
+//     (<フィールド定義> | <メソッド定義>)*
+// }
+
+class APrinter() {
+    def print(): Unit = {
+        println("A")
+    }
+}
+// defined class APointer
+
+class BPrinter() extends APrinter {
+    override def print(): Unit = {
+        println("B")
+    }
+}
+// defined class BPointer
+
+new APointer().print
+// A
+
+new BPointer().print
+// B
+
+// 全てが Int 型の x 、 y 、 z という名前を持った、3次元座標を表す Point3D クラスを定義してください。 
+// Point3D クラスは次のようにして使うことができなければいけません。
+// val p = new Point3D(10, 20, 30)
+// println(p.x) // 10
+// println(p.y) // 20
+// println(p.z) // 30
+class Point3D(val x: Int, val y: Int, val z: Int)
+
+val p = new Point3D(10, 20, 30)
+println(p.x) // 10
+println(p.y) // 20
+println(p.z) // 30
+
+// 次の抽象クラス Shape を継承して、 Rectangle クラス（長方形クラス）とCircle クラス（円クラス）を定義してください。
+// また、area メソッドをオーバーライドして、ただしく面積が計算できるように定義してください。なお、長方形の面積は幅をw、高さをhとすると、
+// w * hで求めることができます。円の面積は、半径をrとすると、r * r * math.Pi で求めることができます。
+// abstract class Shape {
+//   def area: Double
+// }
+// /*
+//  * RectangleとCircleの定義
+//  */
+// var shape: Shape = new Rectangle(10.0, 20.0)
+// println(shape.area)
+// shape = new Circle(2.0)
+// println(shape.area)
+
+abstract class Shape {
+  def area: Double
+}
+
+class Rectangle(val w: Double, val h: Double) extends Shape {
+    def area: Double = w * h
+}
+
+class Circle(val r: Double) extends Shape {
+    def area: Double = r * r * math.Pi
+}
+
+var shape: Shape = new Rectangle(10.0, 20.0)
+println(shape.area)
+shape = new Circle(2.0)
+println(shape.area)
