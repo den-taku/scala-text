@@ -819,3 +819,149 @@ class C extends {
 }
 
 (new C).printBar()
+
+// class <クラス名>[<型パラメータ1>, <型パラメータ2>, ...](<クラス引数>) {
+//     (<フィールド定義>|<メソッド定義>)*
+// }
+
+class Cell[A](var value: A) {
+    def put(newValue: A): Unit = {
+        value = newValue
+    }
+
+    def get(): A = value
+}
+
+val cell = new Cell[Int](1)
+// cell: Cell[Int] = Cell@526a293c
+
+cell.put(2)
+
+cell.get()
+// res1: Int = 2
+
+class Pair[A, B](val a: A, val b: B) {
+    override def toString(): String = "(" + a + ", " + b + ")"
+}
+// defined class Pair
+
+def divide(m: Int, n: Int): Pair[Int, Int] = new Pair[Int, Int](m / n, m % n)
+
+divide(7, 3)
+// res4: Pair[Int,Int] = (2, 1)
+
+// new Tuple2(3, 4)
+(3, 4)
+// res6: (Int, Int) = (3,4)
+
+// when A extends B
+// val: G[B] = G[A] ... ok!
+// class G[+A]
+
+class Pair[+A, +B](val a: A, val b: B) {
+    override def toString(): String = "(" + a + ", " + b + ")"
+}
+
+val pair: Pair[AnyRef, AnyRef] = new Pair[String, String]("foo", "bar")
+
+class Sup
+class Sub extends Sup
+
+class Mono[+A](val a: A)
+
+val sup = new Sup
+val sub = new Sub
+
+var mono = new Mono(sup)
+mono = new Mono(sub)
+
+// 次のimmutableなStack型の定義（途中）があります。???の箇所を埋めて、Stackの定義を完成させなさい。
+// なお、E >: Aは、EはAの継承元である、という制約を表しています。
+//
+// trait Stack[+A] {
+//   def push[E >: A](e: E): Stack[E]
+//   def top: A
+//   def pop: Stack[A]
+//   def isEmpty: Boolean
+// }
+//
+// class NonEmptyStack[+A](private val first: A, private val rest: Stack[A]) extends Stack[A] {
+//   def push[E >: A](e: E): Stack[E] = ???
+//   def top: A = ???
+//   def pop: Stack[A] = ???
+//   def isEmpty: Boolean = ???
+// }
+//
+// case object EmptyStack extends Stack[Nothing] {
+//   def push[E >: Nothing](e: E): Stack[E] = new NonEmptyStack[E](e, this)
+//   def top: Nothing = throw new IllegalArgumentException("empty stack")
+//   def pop: Nothing = throw new IllegalArgumentException("empty stack")
+//   def isEmpty: Boolean = true
+// }
+//
+// object Stack {
+//   def apply(): Stack[Nothing] = EmptyStack
+// }
+//
+// また、Nothingは全ての型のサブクラスであるような型を表現します。
+// Stack[A]は共変なので、Stack[Nothing]はどんな型のStack変数にでも格納することができます。
+// 例えばStack[Nothing]型であるEmptyStackは、Stack[Int]型の変数とStack[String]型の変数の両方に代入することができます。
+//
+// val intStack: Stack[Int] = Stack()
+// // intStack: Stack[Int] = EmptyStack
+// val stringStack: Stack[String] = Stack()
+// // stringStack: Stack[String] = EmptyStack
+
+trait Stack[+A] {
+  def push[E >: A](e: E): Stack[E]
+  def top: A
+  def pop: Stack[A]
+  def isEmpty: Boolean
+}
+
+class NonEmptyStack[+A](private val first: A, private val rest: Stack[A]) extends Stack[A] {
+  def push[E >: A](e: E): Stack[E] = new NonEmptyStack(e, this)
+  def top: A = first
+  def pop: Stack[A] = rest
+  def isEmpty: Boolean = false
+}
+
+case object EmptyStack extends Stack[Nothing] {
+  def push[E >: Nothing](e: E): Stack[E] = new NonEmptyStack[E](e, this)
+  def top: Nothing = throw new IllegalArgumentException("empty stack")
+  def pop: Nothing = throw new IllegalArgumentException("empty stack")
+  def isEmpty: Boolean = true
+}
+
+object Stack {
+  def apply(): Stack[Nothing] = EmptyStack
+}
+
+val intStack: Stack[Int] = Stack()
+// intStack: Stack[Int] = EmptyStack
+val stringStack: Stack[String] = Stack()
+// stringStack: Stack[String] = EmptyStack
+
+// when A extends B
+// val: G[A] = G[B] ... ok!
+// class G[-A]
+
+val x1: AnyRef => AnyRef = (x: String) => (x: String)
+// 11: error: type mismatch;
+
+val x1: String => AnyRef = (x: AnyRef) => x
+
+abstract class Show {
+    def show: String
+}
+
+class ShowablePair[A <: Show, B <: Show](val a: A, val b: B) extends Show {
+    override def show: String = "(" + a.show + ", " + b.show + ")"
+}
+
+abstract class Stack[+A] {
+    def push[E >: A](element: E): Stack[E]
+    def top: A
+    def pop: Stack[A]
+    def isEmpty: Boolean
+}
