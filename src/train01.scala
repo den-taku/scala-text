@@ -1067,3 +1067,212 @@ def printFile(filename: String): Unit = {
     }
 }
 // printFile: (filename: String)Unit
+
+val arr = Array(1, 2, 3, 4, 5)
+// arr: Array[Int] = Array(1, 2, 3, 4, 5)
+
+val arr = Array[Int](1, 2, 3, 4, 5)
+// arr: Array[Int] = Array(1, 2, 3, 4, 5)
+
+arr(0)
+// res0: Int = 1
+
+arr
+// res2: Array[Int] = Array(1, 2, 3, 4, 5)
+
+arr(0)=7
+
+arr(0)
+// res4: Int = 7
+
+arr.length
+// res5: Int = 5
+
+// 配列のi番目の要素とj番目の要素を入れ替えるswapArrayメソッドを定義してみましょう。
+// swapArrayメソッドの宣言は
+//
+// def swapArray[T] (arr: Array[T])(i: Int, j: Int): Unit = ???
+//
+// となります。iとjが配列の範囲外である場合は特に考慮しなくて良いです。
+
+def swapArray[T] (arr: Array[T])(i: Int, j: Int): Unit = {
+    val tmp = arr(i)
+    arr(i) = arr(j)
+    arr(j) = tmp
+}
+
+arr
+// res6: Array[Int] = Array(7, 2, 3, 4, 5)
+
+swapArray(arr)(1, 4)
+
+arr
+// res8: Array[Int] = Array(7, 5, 3, 4, 2)
+
+1 to 5
+// res9: scala.collection.immutable.Range.Inclusive = Range 1 to 5
+
+(1 to 5).toList
+// res10: List[Int] = List(1, 2, 3, 4, 5)
+
+1 until 5
+// res11: scala.collection.immutable.Range = Range 1 until 5
+
+(1 until 5).toList
+// res13: List[Int] = List(1, 2, 3, 4)
+
+val lst = List(1, 2, 3, 4, 5)
+// lst: List[Int] = List(1, 2, 3, 4, 5)
+
+Nil
+// res15: scala.collection.immutable.Nil.type = List()
+
+val a1 = 1 :: Nil
+// a1: List[Int] = List(1)
+
+val a2 = 2 :: a1
+// a2: List[Int] = List(2, 1)
+
+List(1, 2) ++ List(3, 4)
+// res16: List[Int] = List(1, 2, 3, 4)
+
+List(1, 2).++(List(5, 6)).++(List(3, 4))
+// res18: List[Int] = List(1, 2, 5, 6, 3, 4)
+
+List(1, 2, 3, 4, 5).mkString
+// res19: String = 12345
+
+List(1, 2, 3, 4, 5).mkString(",")
+// res21: String = 1,2,3,4,5
+
+List(1, 2, 3, 4, 5).mkString("[", ",", "]")
+// res22: String = [1,2,3,4,5]
+
+// mkStringを使って、最初の数startと最後の数endを受け取って、
+// 
+// start,(start+1),(start+2)...,end
+// 
+// となるような文字列を返すメソッドjoinByCommaを定義してみましょう（ヒント：Range にもmkStringメソッドはあります）。
+
+def joinByComma(start: Int, end: Int): String = {
+    (start to end).mkString(",")
+}
+
+joinByComma(1, 20)
+// res25: String = 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+
+// def foldLeft[B](z: B)(f: (B, A) => B): B
+List(1, 2, 3).foldLeft(0)((x, y) => x + y)
+// res26: Int = 6
+
+def sum(lst: List[Int]): Int = {
+    lst.foldLeft(0)((x, y) => x + y)
+}
+// sum: (lst: List[Int])Int
+
+sum(List(2, 3, 4, 5, 9))
+// res27: Int = 23
+
+List(List(1), List(2, 3), List(4)).foldLeft(Nil: List[Int])(_ ++ _)
+// res28: List[Int] = List(1, 2, 3, 4)
+
+// foldLeftを用いて、Listの要素を反転させる次のシグニチャを持ったメソッドreverseを実装してみましょう：
+// 
+// def reverse[T](list: List[T]): List[T] = ???
+
+def reverse[T](list: List[T]): List[T] = {
+    list.foldLeft(Nil: List[T])((a, b) => b :: a)
+}
+// reverse: [T](list: List[T])List[T]
+
+List(1, 2, 3, 4, 5).reverse
+// res29: List[Int] = List(5, 4, 3, 2, 1)
+
+// def foldRight[B](z: B)(op: (A, B) => B): B
+List(1, 2, 3).foldRight(0)((y, x) => y + x)
+// res30: Int = 6
+
+List(1, 2, 3, 4, 5).map(x => x * 2)
+// res31: List[Int] = List(2, 4, 6, 8, 10)
+
+List(1, 2, 3, 4, 5).filter(x => x % 2 == 1) 
+// res32: List[Int] = List(1, 3, 5)
+
+List(1, 2, 3, 4).find(x => x % 2 == 1)
+// res33: Option[Int] = Some(1)
+
+List(1, 2, 3, 4, 5, 6).takeWhile(x => x != 5)
+// res34: List[Int] = List(1, 2, 3, 4)
+
+List(1, 2, 3, 4, 5).count(x => x % 2 == 0)
+// res37: Int = 2
+
+List(List(1, 2, 3), List(4, 5)).flatMap{e => e.map{g => g + 1}}
+// res38: List[Int] = List(2, 3, 4, 5, 6)
+
+List(1, 2, 3).flatMap{e => List(4, 5).map(g => e * g)}
+// res39: List[Int] = List(4, 5, 8, 10, 12, 15)
+
+// fast
+5 :: List(1, 2, 3, 4)
+// res41: List[Int] = List(5, 1, 2, 3, 4)
+
+// slow
+List(1, 2, 3, 4) :+ 5
+// res40: List[Int] = List(1, 2, 3, 4, 5)
+
+Vector(1, 2, 3, 4, 5)
+// res42: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 4, 5)
+
+6 +: Vector(1, 2, 3, 4, 5, 6) 
+// res43: scala.collection.immutable.Vector[Int] = Vector(6, 1, 2, 3, 4, 5, 6)
+
+Vector(1, 2, 3, 4, 5) :+ 6
+// res44: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 4, 5, 6)
+
+Vector(1, 2, 3, 4, 5).updated(2, 5)
+// res45: scala.collection.immutable.Vector[Int] = Vector(1, 2, 5, 4, 5)
+
+val m = Map("A" -> 1, "B" -> 2, "C" -> 3)
+// m: scala.collection.immutable.Map[String,Int] = Map(A -> 1, B -> 2, C -> 3)
+
+m.updated("B", 4)
+// res46: scala.collection.immutable.Map[String,Int] = Map(A -> 1, B -> 4, C -> 3)
+
+m
+// res47: scala.collection.immutable.Map[String,Int] = Map(A -> 1, B -> 2, C -> 3)
+
+import scala.collection.mutable
+// import scala.collection.mutable
+
+val m = mutable.Map("A" -> 1, "B" -> 2, "C" -> 3)
+// m: scala.collection.mutable.Map[String,Int] = Map(A -> 1, C -> 3, B -> 2)
+
+m("B") = 5
+
+m
+// res49: scala.collection.mutable.Map[String,Int] = Map(A -> 1, C -> 3, B -> 5)
+
+Set(1, 1, 2, 3, 4)
+// res50: scala.collection.immutable.Set[Int] = Set(1, 2, 3, 4)
+
+val s = Set(1, 2, 3, 4, 5)
+// s: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
+
+s - 5
+// res51: scala.collection.immutable.Set[Int] = Set(1, 2, 3, 4)
+
+s
+// res52: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
+
+import scala.collection.mutable
+// import scala.collection.mutable
+
+val s = mutable.Set(1, 2, 3, 4, 5)
+// s: scala.collection.mutable.Set[Int] = Set(1, 5, 2, 3, 4)
+
+s -= 5
+// res54: s.type = Set(1, 2, 3, 4)
+
+s
+// res55: scala.collection.mutable.Set[Int] = Set(1, 2, 3, 4)
