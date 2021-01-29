@@ -965,3 +965,105 @@ abstract class Stack[+A] {
     def pop: Stack[A]
     def isEmpty: Boolean
 }
+
+val add = new Function2[Int, Int, Int] {
+    def apply(x: Int, y: Int): Int = x + y
+}
+
+add.apply(100, 200)
+// res0: Int = 300
+
+add(100,200)
+// res1: Int = 300
+
+val add = (x: Int, y: Int) => x + y
+// add: (Int, Int) => Int = $Lambda$4569/0x0000000801a590a8@7aa351d8
+
+(x: Int, y: Int) => x + y
+// res9: (Int, Int) => Int = $Lambda$4587/0x0000000801a5b4f8@7e07bd69
+
+val add = (x: Int, y: Int) => x + y
+// add: (Int, Int) => Int = $Lambda$4605/0x0000000801a5e370@153aeff7
+
+val addCurried = (x: Int) => ((y:Int) => x + y)
+// addCurried: Int => (Int => Int) = $Lambda$4606/0x0000000801a5f180@43f08d8c
+
+add(100, 200)
+// res12: Int = 300
+
+addCurried(100)(200)
+// res13: Int = 300
+
+def add(x: Int, y: Int): Int = x + y
+
+add _
+// res14: (Int, Int) => Int = $Lambda$4612/0x0000000801a71ac8@253430c3
+
+def addMultiParameterList(x: Int)(y: Int): Int = x + y
+
+addMultiParameterList _
+// res15: Int => (Int => Int) = $Lambda$4613/0x0000000801a73108@5e34396d
+
+def double(n: Int, f: Int => Int): Int = {
+    f(f(n))
+}
+// double: (n: Int, f: Int => Int)Int
+
+double(1, m => m * 2)
+// res18: Int = 4
+
+double(3, m => m * 4)
+// res19: Int = 48
+
+def around(init: () => Unit, body: () => Any, fin: () => Unit): Any = {
+    init()
+    try {
+        body()
+    } finally {
+        fin()
+    }
+}
+// around: (init: () => Unit, body: () => Any, fin: () => Unit)Any
+
+around(
+    () => println("ファイルを開く"),
+    () => println("ファイルに対する処理"),
+    () => println("ファイルを閉じる")
+)
+// ファイルを開く
+// ファイルに対する処理
+// ファイルを閉じる
+// res21: Any = ()
+
+around(
+    () => println("ファイルを開く"),
+    () => throw new Exception("例外発生！"),
+    () => println("ファイルを閉じる")
+)
+// ファイルを開く
+// ファイルを閉じる
+// java.lang.Exception: 例外発生！
+//   at .$anonfun$res23$2(<console>:15)
+//   at .around(<console>:14)
+//   ... 35 elided
+
+import scala.io.Source
+def withFile[A](filename: String)(f: Source => A): A = {
+    val s = Source.fromFile(filename)
+    try {
+        f(s)
+    } finally {
+        s.close()
+    }
+}
+// withFile: [A](filename: String)(f: scala.io.Source => A)A
+
+// withFileメソッドを使って、次のようなシグネチャを持つテキストファイルの中身を一行ずつ表示する関数printFileを実装してみましょう。
+// def printFile(filename: String): Unit = ???
+
+def printFile(filename: String): Unit = {
+    withFile(filename){
+        file => file.getLines.foreach(println)
+    }
+}
+// printFile: (filename: String)Unit
