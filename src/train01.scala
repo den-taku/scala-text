@@ -1398,3 +1398,269 @@ val even: Int => Boolean = (x => x match {
     case _ => false
 })
 // even: Int => Boolean = $Lambda$4967/0x0000000801adfad0@17516840
+
+val o: Option[String] = Option("hoge")
+// o: Option[String] = Some(hoge)
+
+o.get
+// res0: String = hoge
+
+o.isEmpty
+// res1: Boolean = false
+
+o.isDefined
+// res2: Boolean = true
+
+val o: Option[String] = Option(null)
+// o: Option[String] = None
+
+o.isEmpty
+// res4: Boolean = true
+
+o.isDefined
+// res6: Boolean = false
+
+o.getOrElse("")
+// res7: String = ""
+
+o.getOrElse(throw new RuntimeException("nullは受け入れられません"))
+// java.lang.RuntimeException: nullは受け入れられません
+//   at .$anonfun$res8$1(<console>:13)
+//   at scala.Option.getOrElse(Option.scala:189)
+//   ... 31 elided
+
+val s: Option[String] = Some("hoge")
+// s: Option[String] = Some(hoge)
+
+val result = s match {
+    case Some(str) => str
+    case None => "not matched"
+}
+// result: String = hoge
+
+Some(3).map(_ * 3)
+// res9: Option[Int] = Some(9)
+
+val n: Option[Int] = None
+// n: Option[Int] = None
+
+n.map(_ * 3)
+// res10: Option[Int] = None
+
+n.fold(throw new RuntimeException)(_ * 3)
+// java.lang.RuntimeException
+//   at .$anonfun$res11$1(<console>:13)
+//   at scala.Option.fold(Option.scala:251)
+//   ... 31 elided
+
+Some(3).fold(throw new RuntimeException)(_ * 3)
+// res12: Int = 9
+
+val v1: Option[Int] = Some(3)
+// v1: Option[Int] = Some(3)
+
+val v2: Option[Int] = Some(5)
+// v2: Option[Int] = Some(5)
+
+v1.map(i1 => v2.map(i2 => i1 * i2))
+// res13: Option[Option[Int]] = Some(Some(15))
+
+v1.map(i1 => v2.map(i2 => i1 * i2)).flatten
+// res14: Option[Int] = Some(15)
+
+// mapとflattenを利用して、 Some(2)とSome(3)とSome(5)とSome(7)とSome(11)の値をかけて、Some(2310)を求めてみましょう。
+val v1 = Some(2)
+val v2 = Some(3)
+val v3 = Some(5)
+val v4 = Some(7)
+val v5 = Some(11)
+
+v1.map(i1 => v2.map(i2 => v3.map(i3 => v4.map(i4 => v5.map(i5 => i1 * i2 * i3 * i4 * i5))))).flatten.flatten.flatten.flatten
+// res16: Option[Int] = Some(2310)
+
+val v1 = Some(3)
+val v2 = Some(5)
+
+v1.flatMap(i1 => v2.map(i2 => i1 * i2))
+// res18: Option[Int] = Some(6)
+
+val v1: Option[Int] = Some(3)
+// v1: Option[Int] = Some(value = 3)
+
+val v2: Option[Int] = Some(5)
+// v2: Option[Int] = Some(value = 5)
+
+val v3: Option[Int] = Some(7)
+// v3: Option[Int] = Some(value = 7)
+
+v1.flatMap(i1 => v2.flatMap(i2 => v3.map(i3 => i1 * i2 * i3)))
+// res14: Option[Int] = Some(value = 105)
+
+val v3: Option[Int] = None
+// v3: Option[Int] = None
+
+v1.flatMap(i1 => v2.flatMap(i2 => v3.map(i3 => i1 * i2 * i3)))
+// res20: Option[Int] = None
+
+// flatMapとmapを利用して、 Some(2)とSome(3)とSome(5)とSome(7)とSome(11)の値をかけて、Some(2310)を求めてみましょう。
+val v1 = Some(2)
+val v2 = Some(3)
+val v3 = Some(5)
+val v4 = Some(7)
+val v5 = Some(11)
+
+v1.flatMap(i1 => v2.flatMap(i2 => v3.flatMap(i3 => v4.flatMap(i4 => v5.map(i5 => i1 * i2 * i3 * i4 * i5)))))
+// v1: Some[Int] = Some(2)
+// v2: Some[Int] = Some(3)
+// v3: Some[Int] = Some(5)
+// v4: Some[Int] = Some(7)
+// v5: Some[Int] = Some(11)
+// res21: Option[Int] = Some(2310)
+
+val v1: Option[Int] = Some(3)
+val v2: Option[Int] = Some(5)
+val v3: Option[Int] = Some(7)
+
+for { 
+    i1 <- v1 
+    i2 <- v2
+    i3 <- v3
+} yield i1 * i2 * i3
+// res22: Option[Int] = Some(105)
+
+// forを利用して、 Some(2)とSome(3)とSome(5)とSome(7)とSome(11)の値をかけて、Some(2310)を求めてみましょう。
+val v1 = Some(2)
+val v2 = Some(3)
+val v3 = Some(5)
+val v4 = Some(7)
+val v5 = Some(11)
+for {
+    i1 <- v1
+    i2 <- v2
+    i3 <- v3
+    i4 <- v4
+    i5 <- v5
+} yield i1 * i2 * i3 * i4 * i5
+// res23: Option[Int] = Some(2310)
+
+sealed trait LoginError
+
+case object InvalidPassword extends LoginError
+case object UserNotFound extends LoginError
+case object PassWordLocked extends LoginError
+
+case class User(id: Long, name: String, password: String)
+
+object LoginService {
+    def login(name: String, password: String): Either[LoginError, User] = Left(InvalidPassword)
+}
+
+LoginService.login(name = "dwango", password = "password") match {
+    case Right(user) => println(s"id: ${user.id}")
+    case Left(InvalidPassword) => println(s"Invalid Password!")
+}
+
+val v: Either[String, Int] = Right(123)
+
+v.map(_ * 2)
+// res25: scala.util.Either[String,Int] = Right(246)
+
+val v2: Either[String, Int] = Left("a")
+
+v2.map(_ * 2)
+// res26: scala.util.Either[String,Int] = Left(a)
+
+def f(x: Any): Unit = println("f")
+// f: (x: Any)Unit
+
+def g(): Unit = println("g")
+// g: ()Unit
+
+f(g())
+// g
+// f
+
+def g(): Unit = println("g")
+def f(g: => Unit): Unit = {
+    println("prologue f")
+    g
+    println("epilogue f")
+}
+f(g())
+
+import scala.util.Try
+
+val v:Try[Int] = Try(throw new RuntimeException("to be caught"))
+// v: scala.util.Try[Int] = Failure(java.lang.RuntimeException: to be caught)
+
+val v1 = Try(3)
+val v2 = Try(5)
+val v3 = Try(7)
+for {
+    i1 <- v1
+    i2 <- v2
+    i3 <- v3
+} yield i1 * i2 * i3
+// res34: scala.util.Try[Int] = Success(105)
+
+import scala.util.control.NonFatal
+
+try {
+    //
+} catch {
+    case NonFatal(e) => ()
+}
+
+object MainBefore {
+    case class Address(id: Int, name: String, postalCode: Option[String])
+    case class User(id: Int, name: String, addressId: Option[Int])
+
+    val userDatabase: Map[Int, User] = Map (
+        1 -> User(1, "太郎", Some(1)),
+        2 -> User(2, "二郎", Some(2)),
+        3 -> User(3, "ぷー太郎", None),
+    )
+
+    val addressDatabase: Map[Int, Address] = Map (
+        1 -> Address(1, "渋谷", Some("150-0002")),
+        2 -> Address(2, "国際宇宙ステーション", None)
+    )
+
+    sealed abstract class PostalCodeResult
+    case class Success(postalCode: String) extends PostalCodeResult
+    abstract class Failure extends PostalCodeResult
+    case object UserNotFound extends Failure
+    case object UserNotHasAddress extends Failure
+    case object AddressNotFound extends Failure
+    case object AddressNotHasPostalCode extends Failure
+
+    def getPostalCodeResult(userId: Int): PostalCodeResult = {
+        (for {
+            user <- findUser(userId)
+            address <- findAddress(user)
+            postalCode <- findPostalCode(address)
+        } yield Success(postalCode)).merge
+    }
+
+    def findUser(userId: Int): Either[Failure, User] = {
+        userDatabase.get(userId).toRight(UserNotFound)
+    }
+
+    def findAddress(user: User): Either[Failure, Address] = {
+        for {
+            addressId <- user.addressId.toRight(UserNotHasAddress)
+            address <- addressDatabase.get(addressId).toRight(AddressNotFound)
+        } yield address
+    }
+
+    def findPostalCode(address: Address): Either[Failure, String] = {
+        address.postalCode.toRight(AddressNotHasPostalCode)
+    }
+
+    def main(args: Array[String]): Unit = {
+        println(getPostalCodeResult(1))
+        println(getPostalCodeResult(2))
+        println(getPostalCodeResult(3))
+        println(getPostalCodeResult(4))
+    }
+}
